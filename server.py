@@ -59,43 +59,34 @@ app.layout = dbc.Container(
             ]
         ),
         dbc.Row([dbc.Col(html.Div(id="table-container"), width=12)]),
-        html.Div(
-            style={"display": "none"},
-            children=[
-                html.Div(
-                    children=[
-                        """
-            <style>
-                .table tbody tr:nth-child(even) {
-                    background-color: lightgray;
-                }
-            </style>
-            """
-                    ]
-                )
-            ],
-        ),
     ]
 )
 
 
-# Define callback
 @app.callback(
-    Output("table-container", "children"),
-    [Input("filter-button", "n_clicks")],
-    [State("filter-input", "value")],
+    Output('table-container', 'children'),
+    [Input('filter-button', 'n_clicks')],
+    [State('filter-input', 'value')]
 )
 def update_table(n_clicks, value):
     if value is not None:
-        filtered_df = df[
-            df.apply(lambda row: row.astype(str).str.contains(value).any(), axis=1)
-        ]
+        filtered_df = df[df.apply(lambda row: row.astype(str).str.contains(value).any(), axis=1)]
     else:
         filtered_df = df
 
-    return [
-        dbc.Table.from_dataframe(filtered_df, striped=True, bordered=True, hover=True)
-    ]
+    return [dash.dash_table.DataTable(
+        data=filtered_df.to_dict('records'),
+        columns=[{'name': i, 'id': i} for i in filtered_df.columns],
+        page_action='native',
+        page_size=30,
+        virtualization=True,
+        style_data_conditional=[
+            {
+                'if': {'row_index': 'odd'},
+                'backgroundColor': 'lightgray'
+            }
+        ]
+    )]
 
 
 # Run app
