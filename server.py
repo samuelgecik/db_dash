@@ -43,13 +43,8 @@ app.layout = dbc.Container(
                         dbc.Input(
                             id="filter-input",
                             type="text",
-                            placeholder="Filter rows...",
+                            placeholder="Filter word...",
                             className="mb-3",
-                        ),
-                        dcc.Dropdown(
-                            id='country-dropdown',
-                            options=[{'label': i, 'value': i} for i in df['Contact Country'].unique()],
-                            placeholder="Select a country",
                         ),
                         dbc.Button(
                             "Submit",
@@ -58,7 +53,15 @@ app.layout = dbc.Container(
                             className="mt-1",
                         ),
                     ],
-                    md={"size": 6, "offset": 3},
+                    md=6,
+                ),
+                dbc.Col(
+                    dcc.Dropdown(
+                                id='country-dropdown',
+                                options=[{'label': i, 'value': i} for i in df['Contact Country'].unique()],
+                                placeholder="Select a country",
+                            ),
+                    md=6,
                 )
             ]
         ),
